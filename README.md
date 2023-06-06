@@ -1,6 +1,6 @@
 ### SMP Bot
 
-SMp Bot is an utility bot for my SMP Minecraft Server.
+SMP Bot is an utility bot for my SMP Minecraft Server.
 
 ## Features
 
@@ -22,8 +22,9 @@ npm install
 
 4. Rename the file `.env.example` to `.env` and provide your secret information in this file. Make sure to update the necessary environment variables with your specific values.
 
-5. Start the bot by running the following command:
+5. Build source TS to JS and start the bot by running the following command:
 ```
+npm run build
 npm start
 ```
 
