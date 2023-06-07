@@ -1,4 +1,5 @@
-import { Message } from "discord.js";
+import { Collection, Message } from "discord.js";
+import { serverModel } from "../../databases/server-model";
 import { Bot } from "../../struct/Bot";
 import type { CommandData } from "../../struct/Commands";
 import Context from "../../struct/Context";
@@ -31,12 +32,48 @@ export async function execute(client: Bot, message: Message) {
 async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 	if (message.channel.id !== client.config.whitelist.channelId
 		|| message.author.bot
-		|| client.utils.isDev(message.author.id)) return;
+		// || client.utils.isDev(message.author.id)
+	) return;
+
+	const db = await serverModel.findOne({ guildId: message.guildId });
+	if (db) {
+		const data = db.whitelist.find(data => data.userId == message.author.id);
+		const sendMessage = (msg) => {
+			message.channel.send(`${message.author.toString()}, ${msg}`).then(msg => setTimeout(() => msg.delete(), 30000));
+			message.delete();
+		};
+		if (data?.approved === true) {
+			sendMessage(`bạn đã sử dụng **${data.ign}** và đã được duyệt!`);
+			return;
+		}
+		if (data?.denied === true) {
+			sendMessage(`bạn đã sử dụng **${data.ign}** và đã bị từ chối!`);
+			return;
+		}
+		const nameUsed = db.whitelist.find(data => data.ign == message.content);
+		if (nameUsed) {
+			sendMessage(`**${message.content}** đã có nugời sử dụng!`);
+			return;
+		}
+		if (data && data.approved === false && data.denied === false) {
+			sendMessage(`bạn đã sử dụng **${data.ign}** tại server, vui lòng chờ duyệt!`);
+			return;
+		}
+	}
+
+	db.whitelist.push({
+		userId: message.author.id,
+		ign: message.content,
+		approved: false,
+		denied: false
+	});
+	await db.save();
+
 	await message.react(client.emotes.approved);
 	await message.react(client.emotes.denied);
 
 	// update info message
-	message.channel.messages.fetch().then(msgs => {
+	message.channel.messages.fetch().then((msgs: Collection<string, Message>) => {
 		const msg = msgs.find(msg => msg.author.id == client.user.id);
 		if (!msg) return;
 		msg.delete();

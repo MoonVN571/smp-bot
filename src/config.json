@@ -8,18 +8,11 @@
         "error": 3092790,
         "success": 3092790
     },
-    "adminServers": [
-        ""
-    ],
-    "logs": {
-        "enable": false,
-        "commands": "",
-        "error": ""
-    },
     "whitelist": {
         "reaction": [
             "1115515233402896465"
         ],
-        "channelId": "1112315742088613898"
+        "roleId": "1115851566403031090",
+        "channelId": "1115620520847740989"
     }
 }

@@ -25,11 +25,10 @@ export async function execute(client: Bot, _reaction: MessageReaction, user: Use
 	}
 	if (!member) return;
 	if (emoji === client.emotes.approved) {
-		db.whitelist[index].approved = true;
-		member.roles.add(role);
-	} else if (emoji === client.emotes.denied) {
+		db.whitelist[index].approved = false;
 		member.roles.remove(role);
-		db.whitelist[index].denied = true;
+	} else if (emoji === client.emotes.denied) {
+		db.whitelist[index].denied = false;
 	}
 	await db.save();
 }
