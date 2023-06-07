@@ -1,16 +1,18 @@
-import { GuildMember, MessageReaction, User } from "discord.js";
+import { GuildMember, MessageReaction, PartialMessageReaction, User } from "discord.js";
 import { serverModel } from "../../databases/server-model";
 import { Bot } from "../../struct/Bot";
 
-export async function execute(client: Bot, _reaction: MessageReaction, user: User) {
+export async function execute(client: Bot, _reaction: MessageReaction | PartialMessageReaction, user: User) {
 	const reaction = await _reaction.fetch();
 	const message = await reaction.message.fetch();
-	if (reaction.message.channel.id == client.config.whitelist.channelId
+
+	if (message.channel.id == client.config.whitelist.channelId
 		&& !user.bot
 		&& client.config.developers.indexOf(user.id) == -1
-		&& client.config.whitelist.reaction.indexOf(user.id) == -1)
+		&& client.config.whitelist.reaction.indexOf(user.id) == -1) {
 		return reaction.users.remove(user);
-	if (user.bot) return;
+	} if (user.bot) return;
+
 	const db = await serverModel.findOne({ guildId: message.guildId });
 	if (!db) return;
 

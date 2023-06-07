@@ -13,8 +13,7 @@ import { Commands } from "../functions/Command";
 import { Utils } from "../functions/Utils";
 
 export class Bot extends Client {
-	/* eslint-disable @typescript-eslint/no-explicit-any */
-	public commands: Collection<string, any> = new Collection();
+	public commands: Collection<string, CommandData> = new Collection();
 	public logger: Logger = new Logger();
 
 	public dev = process.env.NODE_ENV == "development";
@@ -35,22 +34,20 @@ export class Bot extends Client {
 
 	public async loadCommands(): Promise<void> {
 		const categories: string[] = readdirSync("./src/commands");
-		await Promise.all(categories.map(async (category: string) => {
-			const commands = readdirSync("./src/commands/" + category);
-			await Promise.all(commands.map(async (cmd: string) => {
-				let cmdName = cmd.split(".")[0];
-				if (!this.dev) cmdName = cmdName + ".js";
+		categories.forEach((category: "developer" | "utils") => {
+			const commands = readdirSync(`./src/commands/${category}`);
+			commands.forEach(async (cmd: string) => {
+				const cmdName = cmd.split(".")[0];
 				const data: CommandData = await import(`../commands/${category}/${cmdName}`);
-				if (!data) return;
-				const command: any = { ...data, category };
-				this.commands.set(data.data.name, command);
-			}));
-		}));
+				data.data.category = category;
+				this.commands.set(data.data.name, data);
+			});
+		});
 	}
 
 	public loadEvents(): void {
-		readdirSync("./src/events/Bot").forEach(async (event: any) => {
-			const eventName = event.split(".")[0];
+		readdirSync("./src/events/Bot").forEach(async (event: string) => {
+			const eventName: string = event.split(".")[0];
 			const { execute } = await import(`../events/Bot/${eventName}`);
 			if (typeof execute !== "function") return;
 			this.on(eventName, (...p) => execute(this, ...p));

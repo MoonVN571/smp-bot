@@ -37,12 +37,12 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 	) return;
 
 	const db = await serverModel.findOne({ guildId: message.guildId });
+	const sendMessage = (msg: string) => {
+		message.channel.send(`${message.author.toString()}, ${msg}`).then(msg => setTimeout(() => msg.delete(), 30000));
+		message.delete();
+	};
 	if (db) {
 		const data = db.whitelist.find(data => data.userId == message.author.id);
-		const sendMessage = (msg) => {
-			message.channel.send(`${message.author.toString()}, ${msg}`).then(msg => setTimeout(() => msg.delete(), 30000));
-			message.delete();
-		};
 		if (data?.approved === true) {
 			sendMessage(`bạn đã sử dụng **${data.ign}** và đã được duyệt!`);
 			return;
@@ -51,7 +51,7 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 			sendMessage(`bạn đã sử dụng **${data.ign}** và đã bị từ chối!`);
 			return;
 		}
-		const nameUsed = db.whitelist.find(data => data.ign == message.content);
+		const nameUsed = db.whitelist.find(data => data.ign.toLowerCase() === message.content.toLowerCase());
 		if (nameUsed) {
 			sendMessage(`**${message.content}** đã có nugời sử dụng!`);
 			return;
@@ -61,6 +61,9 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 			return;
 		}
 	}
+
+	if (!validIgn(message.content))
+		return sendMessage("tên của bạn không hợp lệ!");
 
 	db.whitelist.push({
 		userId: message.author.id,
@@ -80,4 +83,17 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 		msg.delete();
 		message.channel.send(msg.content);
 	});
+}
+
+function validIgn(username: string): boolean {
+	if (username.length < 3 || username.length > 16) {
+		return false;
+	}
+
+	const regex = /^[a-zA-Z0-9_]+$/;
+	if (!regex.test(username)) {
+		return false;
+	}
+
+	return true;
 }

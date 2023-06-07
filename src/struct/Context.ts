@@ -9,8 +9,7 @@ import {
 	User,
 	ChatInputCommandInteraction,
 	AutocompleteInteraction,
-	ClientUser,
-	Collection
+	ClientUser
 } from "discord.js";
 import { Bot } from "./Bot";
 import emojis from "../assets/emojis.json";
@@ -26,7 +25,7 @@ export default class Context {
 	public id: string;
 	public channelId: string;
 	public client: Bot;
-	public author: User | null;
+	public author: User;
 	public channel: GuildChannel | TextChannel | null;
 	public guild: Guild | null;
 	public member: APIInteractionGuildMember | GuildMember;
@@ -36,7 +35,6 @@ export default class Context {
 	public msg: any;
 
 	public utils: Utils;
-	public speaking: Collection<string, any> = new Collection();
 
 	public readonly emotes = emojis;
 	public config = config;
@@ -67,18 +65,14 @@ export default class Context {
 			this.args = args;
 		}
 	}
-	public async getMember(userId: any): Promise<any> {
-		const regex = /^<@!?(\d+)>$/; // Biểu thức chính quy để tìm ID trong mention
+	public async getMember(userId: string): Promise<any> {
+		const regex = /^<@!?(\d+)>$/;
 		const match = userId.match(regex);
 		if (match) userId = match[1];
 		return new Promise((res) => {
-			/* eslint-disable @typescript-eslint/no-unused-vars */
 			const member = this.guild?.members.cache.get(userId);
 			if (member) res(member);
-			else this.guild?.members.fetch(userId as string).then(res).catch(err => {
-				// this.client.logger.error("Fetch member:", err);
-				res(undefined);
-			});
+			else this.guild.members.fetch(userId).then(res).catch(() => res(undefined));
 		});
 	}
 	public async sendMessage(content: any) {
