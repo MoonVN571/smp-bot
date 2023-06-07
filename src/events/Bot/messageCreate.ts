@@ -32,7 +32,8 @@ export async function execute(client: Bot, message: Message) {
 async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 	if (message.channel.id !== client.config.whitelist.channelId
 		|| message.author.bot
-		// || client.utils.isDev(message.author.id)
+		|| client.utils.isDev(message.author.id)
+		|| client.config.whitelist.reaction.indexOf(message.author.id) !== -1
 	) return;
 
 	const db = await serverModel.findOne({ guildId: message.guildId });
