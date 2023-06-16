@@ -36,7 +36,9 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 		|| client.config.whitelist.reaction.indexOf(message.author.id) !== -1
 	) return;
 
-	const db = await serverModel.findOne({ guildId: message.guildId });
+	let db = await serverModel.findOne({ guildId: message.guildId });
+	if (!db) db = await servermodel.create([guildId: message.guildId]);
+
 	const sendMessage = (msg: string) => {
 		message.channel.send(`${message.author.toString()}, ${msg}`).then(msg => setTimeout(() => msg.delete(), 30000));
 		message.delete();
@@ -64,6 +66,8 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 
 	if (!validIgn(message.content))
 		return sendMessage("tên của bạn không hợp lệ!");
+
+	if (!db.whitelist) db.whitelist = [];
 
 	db.whitelist.push({
 		userId: message.author.id,
