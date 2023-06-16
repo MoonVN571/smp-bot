@@ -37,7 +37,7 @@ async function handleWhitelist(client: Bot, message: Message): Promise<void> {
 	) return;
 
 	let db = await serverModel.findOne({ guildId: message.guildId });
-	if (!db) db = await servermodel.create([guildId: message.guildId]);
+	if (!db) db = await serverModel.create([guildId: message.guildId]);
 
 	const sendMessage = (msg: string) => {
 		message.channel.send(`${message.author.toString()}, ${msg}`).then(msg => setTimeout(() => msg.delete(), 30000));
