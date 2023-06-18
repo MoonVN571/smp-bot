@@ -1,31 +1,35 @@
-### SMP Bot
+### Wildlands Bot
 
-SMP Bot is an utility bot for my SMP Minecraft Server.
+Misc for my smp minecraft server
 
 ## Features
 
-- **React Yes/No**: Allows owners to choose between accepting or rejecting whitelist applications.
-- **Sticky Messages**: Let the bot send a message to a channel, and when someone requests whitelist, it will be pinned to latest messages.
+- **React Yes/No**: If yes, the user who request whitelist will be received the whitelist role.
+- **Sticky Messages**: Let the bot send a message to a channel, and when someone requests whitelist, it will be pinned to latest bot messages.
 
 ## Setup
 
 Follow these step to setup the bot:
 
-1. Download and install Node.js (version 16 or above) from the official website.
+1. Download and install Node.js (v16.6+) from the official website.
 
-2. Install the required dependencies by running the following command:
+2. Install the required dependencies by running the command:
 ```
 npm install
 ```
 
-3. Modify the configuration in the `src/config.json` file according to your requirements. This file contains various settings that can be customized for your server.
+3. Modify the configuration in the `src/config.json` file according to your requirements. 
 
-4. Rename the file `.env.example` to `.env` and provide your secret information in this file. Make sure to update the necessary environment variables with your specific values.
+4. Rename the file `.env.example` to `.env` and provide your secret information in this file.
 
-5. Build source TS to JS and start the bot by running the following command:
+5. Run the bot:
+- Development (requries ts-node on your system):
 ```
-npm run build
+ts-node .
+``` 
+- Production:
+```
 npm start
 ```
 
-The bot will now be up and running.
+The bot will be started.
