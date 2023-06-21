@@ -5,7 +5,7 @@ import { Bot } from "../struct/Bot";
 import Context from "../struct/Context";
 
 import { CommandData } from "../struct/Commands";
-import { GuildMember } from "discord.js";
+import { CommandInteractionOption, GuildMember } from "discord.js";
 
 export class Commands {
 	public client: Bot;
@@ -38,46 +38,29 @@ export class Commands {
 		return true;
 	}
 
-	/* eslint-disable @typescript-eslint/no-explicit-any */
 	public async sendCmdLog(ctx: Context, msg?: string): Promise<void> {
-		if (!msg) msg = `/${ctx.interaction.commandName} ${this.getSlashData(ctx.interaction.options.data as any)}`;
+		if (!msg) msg = `/${ctx.interaction.commandName} ${this.getSlashData(ctx.interaction.options.data.slice())}`;
 		this.client.logger.info(`[${ctx.guild?.name}] [${ctx.channel?.name}] - ${ctx.author?.tag} (${ctx.author?.id}) : ${msg}`);
 	}
 
-	private getSlashData(data: any[]) {
+	private getSlashData(data: CommandInteractionOption[]) {
 		let result = "";
-
-		data.forEach((item: any) => {
+		data.forEach(item => {
 			result += item.name;
-
 			if (item.options) {
-				item.options.forEach((option: any) => {
+				item.options.forEach((option) => {
 					result += " " + option.name;
+					if (option.value) result += ":" + option.value;
+					option.options?.forEach((nestedOption) => {
+						result += " " + nestedOption.name;
+						if (nestedOption.value) result += ":" + nestedOption.value;
+					});
 
-					if (option.value) {
-						result += ":" + option.value;
-					}
-
-					if (option.options) {
-						option.options.forEach((nestedOption: any) => {
-							result += " " + nestedOption.name;
-
-							if (nestedOption.value) {
-								result += ":" + nestedOption.value;
-							}
-						});
-					}
 				});
-			} else if (item.value) {
-				result += ":" + item.value;
-			}
-
+			} else if (item.value) result += ":" + item.value;
 			result += " ";
 		});
-
-		// Xóa khoảng trắng cuối cùng
 		result = result.trim();
-
 		return result;
 	}
 }
