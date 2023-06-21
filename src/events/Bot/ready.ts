@@ -29,7 +29,7 @@ export async function execute(client: Bot) {
 			embed.description = "";
 			embed.fields = [{
 				name: "Players [" + res.data.players.online + "]",
-				value: res.data.players?.list.join(", ") || "Không một bóng người",
+				value: res.data.players.list?.join(", ") || "Không một bóng người",
 				inline: true
 			}, {
 				name: "Version",
