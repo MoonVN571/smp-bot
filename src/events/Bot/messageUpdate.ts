@@ -9,8 +9,8 @@ export async function execute(client: Bot, message: Message) {
 	const data = db.whitelist.find(data => data.userId == message.author.id);
 	if (!data) return;
 
-	const index = db.whitelist.indexOf(data);
-	db.whitelist.splice(index, 1);
-
 	await db.save();
+
+	message.delete();
+	message.channel.send(`${message.author.toString()} vui lòng nhập lại ign!`).then(msg => setTimeout(() => msg.delete(), 30 * 1000));
 }

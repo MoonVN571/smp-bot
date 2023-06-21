@@ -5,7 +5,7 @@ import { Bot } from "../struct/Bot";
 import Context from "../struct/Context";
 
 import { CommandData } from "../struct/Commands";
-import { CommandInteractionOption, GuildMember } from "discord.js";
+import { CommandInteractionOption } from "discord.js";
 
 export class Commands {
 	public client: Bot;
@@ -13,29 +13,19 @@ export class Commands {
 		this.client = client;
 	}
 
-	public async canUserRunCommand(ctx: Context, cmd?: CommandData, type?: "prefix" | undefined): Promise<boolean> {
-		const isDeveloper: boolean = this.client.config.developers.indexOf(ctx.author?.id as string) > -1;
-		const hasRole = async (roleId: string) => (ctx.member as GuildMember).roles.cache.has(roleId);
-		const noPerm = () => ctx.sendMessage({
+	public async canUserRunCommand(ctx: Context, cmd?: CommandData): Promise<boolean> {
+		const isDeveloper: boolean = this.client.config.developers.indexOf(ctx.author.id) !== -1;
+		if (isDeveloper && cmd.data.whitelist?.developer === true)
+			return true;
+
+		ctx.sendMessage({
 			embeds: [{
 				description: "Bạn không thể dùng lệnh này!",
 				color: ctx.config.color.error
 			}],
 			ephemeral: true
 		});
-		const needSetup = () => ctx.sendMessage({
-			embeds: [{
-				description: "Server chưa thiết lập roles.",
-				color: ctx.config.color.error
-			}],
-			ephemeral: true
-		});
-		if (type == "prefix" && cmd.data.command?.slash) return false;
-		if (!isDeveloper && cmd.data.whitelist?.developer) {
-			noPerm();
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	public async sendCmdLog(ctx: Context, msg?: string): Promise<void> {

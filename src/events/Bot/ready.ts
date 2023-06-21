@@ -1,7 +1,6 @@
-import { Colors, Message, TextBasedChannel } from "discord.js";
+import { APIEmbed, Colors, Message, TextBasedChannel } from "discord.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { serverModel } from "../../databases/server-model";
 import axios from "axios";
 dotenv.config();
 import { Bot } from "../../struct/Bot";
@@ -16,8 +15,8 @@ export async function execute(client: Bot) {
 	const sttChannel = guild.channels.cache.get(client.config.status.channelId) as TextBasedChannel;
 	const ipServer = "wildlands.online";
 	const updateStatus = () => sttChannel.messages.fetch(client.config.status.msgId).then(async (msg: Message) => {
-		const embed: any = {
-			author: { name: "Wild Lands SMP", iconURL: client.user.displayAvatarURL() },
+		const embed: APIEmbed = {
+			author: { name: "Wild Lands SMP", icon_url: client.user.displayAvatarURL() },
 			thumbnail: { url: guild.iconURL() },
 			color: Colors.Red,
 			description: "Server đang offline.",
@@ -57,26 +56,6 @@ export async function execute(client: Bot) {
 	await mongoose.connect(process.env.MONGO_STRING as string).then(() => {
 		client.logger.start("Connected to MongoDB!");
 	});
-
-	/*
-	const channel = client.channels.cache.get(client.config.whitelist.channelId) as TextBasedChannel;
-	channel.messages.fetch().then(async msgs => {
-		let db = await serverModel.findOne({ guildId: "1115619473840418906" });
-		if (!db) db = await serverModel.create({ guildId: "1115619473840418906" });
-		db.whitelist = [];
-		msgs.forEach(async msg => {
-			if (msg.author.bot) return;
-			db.whitelist.push({
-				userId: msg.author.id,
-				ign: msg.content,
-				approved: false,
-				denied: false
-			});
-			// await msg.react(client.emotes.approved);
-			// msg.react(client.emotes.denied);
-		});
-		await db.save();
-	}); */
 
 	// channel.send("Không ghi bất kì nội dung gì khác ngoài IGN (kể cả emoji). Chúng mình sử dụng bot để quản lí toàn bộ IGN này.");
 }

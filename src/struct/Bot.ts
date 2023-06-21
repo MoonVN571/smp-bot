@@ -46,11 +46,10 @@ export class Bot extends Client {
 	}
 
 	public loadEvents(): void {
-		readdirSync("./src/events/Bot").forEach(async (event: string) => {
-			const eventName: string = event.split(".")[0];
-			const { execute } = await import(`../events/Bot/${eventName}`);
-			if (typeof execute !== "function") return;
-			this.on(eventName, (...p) => execute(this, ...p));
+		readdirSync("./src/events/Bot").forEach(async (eventFile: string) => {
+			const eventName: string = eventFile.split(".")[0];
+			const event = await import(`../events/Bot/${eventName}`);
+			this.on(eventName, (...p) => event.execute(this, ...p));
 		});
 	}
 }

@@ -6,7 +6,6 @@ import Context from "../../struct/Context";
 dotenv.config();
 
 export async function execute(client: Bot, interaction: Interaction) {
-	/* eslint-disable @typescript-eslint/no-explicit-any */
 	if (interaction.isAutocomplete()) {
 		const cmd: CommandData = client.commands.get(interaction.commandName);
 		if (cmd) cmd.autoComplete(interaction as AutocompleteInteraction);
@@ -19,8 +18,8 @@ export async function execute(client: Bot, interaction: Interaction) {
 	}
 
 	if (interaction.isChatInputCommand()) {
-		const ctx = new Context(interaction, interaction.options.data as any);
-		ctx.setArgs(interaction.options.data as any);
+		const ctx = new Context(interaction, interaction.options.data.slice());
+		ctx.setArgs(interaction.options.data.slice());
 
 		const cmd: CommandData = client.commands.get(interaction.commandName);
 		if (!cmd) return;

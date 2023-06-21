@@ -40,7 +40,7 @@ export default class Context {
 	public config = config;
 	public readonly color = config.color;
 
-	constructor(ctx: any, args: string[]) {
+	constructor(ctx: any, args: any[]) {
 		this.ctx = ctx;
 		this.isInteraction = ctx instanceof CommandInteraction;
 		this.interaction = this.isInteraction ? ctx : null;

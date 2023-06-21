@@ -24,7 +24,7 @@ export async function execute(client: Bot, message: Message) {
 	ctx.setArgs(args);
 
 	client.cmds.sendCmdLog(ctx, message.content);
-	if (!await client.cmds.canUserRunCommand(ctx, cmd, "prefix")) return;
+	if (!await client.cmds.canUserRunCommand(ctx, cmd)) return;
 
 	cmd.execute(ctx, args);
 }
