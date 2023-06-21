@@ -51,7 +51,7 @@ export async function execute(client: Bot) {
 		});
 	});
 	updateStatus();
-	setInterval(updateStatus, 1,* 60 * 1000);
+	setInterval(updateStatus, 1 * 60 * 1000);
 
 	await mongoose.connect(process.env.MONGO_STRING as string).then(() => {
 		client.logger.start("Connected to MongoDB!");
