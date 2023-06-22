@@ -29,10 +29,10 @@ export async function execute(client: Bot) {
 			embed.description = "";
 			embed.fields = [{
 				name: "Players [" + res.data.players.online + "]",
-				value: res.data.players.list.join(", "),
+				value: res.data.players.list?.join(", ") || "Không một bóng người",
 				inline: true
 			}, {
-				name: "Phiên Bản",
+				name: "Version",
 				value: res.data.version,
 				inline: true
 			}, {
@@ -51,7 +51,7 @@ export async function execute(client: Bot) {
 		});
 	});
 	updateStatus();
-	setInterval(updateStatus, 5 * 60 * 1000);
+	setInterval(updateStatus, 1 * 60 * 1000);
 
 	await mongoose.connect(process.env.MONGO_STRING as string).then(() => {
 		client.logger.start("Connected to MongoDB!");
