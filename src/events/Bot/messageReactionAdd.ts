@@ -30,10 +30,12 @@ export async function execute(client: Bot, _reaction: MessageReaction | PartialM
 	if (!member) return;
 	if (emoji === client.emotes.approved) {
 		db.whitelist[index].approved = true;
+		db.whitelist[index].denied = false;
 		member.roles.add(role);
 	} else if (emoji === client.emotes.denied) {
 		member.roles.remove(role);
 		db.whitelist[index].denied = true;
+		db.whitelist[index].approved = false;
 	}
 	await db.save();
 }
