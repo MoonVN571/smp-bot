@@ -9,7 +9,7 @@ export async function execute(client: Bot) {
 	client.logger.start("Bot started!");
 
 	client.application.commands.set(client.commands.map(cmd => cmd.data));
-	client.guilds.cache.get("1115619473840418906").commands.set([]);
+	client.guilds.cache.get("1115619473840418906")?.commands.set([]);
 
 	const guild = client.guilds.cache.get(client.config.guildId);
 	const sttChannel = guild.channels.cache.get(client.config.status.channelId) as TextBasedChannel;

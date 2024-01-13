@@ -1,23 +1,19 @@
 import {
-	ApplicationCommandOption,
-	AutocompleteInteraction,
-	ButtonInteraction,
-	PermissionsString
+    AutocompleteInteraction,
+    ButtonInteraction,
+    ChatInputApplicationCommandData,
 } from "discord.js";
 import Context from "./Context";
 
-export declare interface Command {
-    name: string;
-    description: string;
-    options?: ApplicationCommandOption[];
+
+export declare interface Command extends ChatInputApplicationCommandData {
     aliases?: string[];
     command?: {
         slash?: boolean;
         prefix?: boolean;
     };
+    category?: string;
     whitelist?: Whitelist;
-    defaultMemberPermissions?: PermissionsString[];
-    category?: "developer" | "utils";
 }
 
 export interface Whitelist {
