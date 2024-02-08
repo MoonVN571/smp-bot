@@ -6,12 +6,25 @@ dotenv.config();
 import { Bot } from "../../struct/Bot";
 
 export async function execute(client: Bot) {
-	client.logger.start("Bot started!");
+	client.logger.start("Bot started! " + client.user.tag);
 
 	client.application.commands.set(client.commands.map(cmd => cmd.data));
-	client.guilds.cache.get("1115619473840418906")?.commands.set([]);
-
 	const guild = client.guilds.cache.get(client.config.guildId);
+	guild.commands.set([]);
+
+	// guild.members.fetch().then(async m => {
+	// 	await Promise.all(m.map(async member => {
+	// 		if (member.user.bot && member.roles.cache.has("1205012992882778163"))
+	// 			return await member.roles.remove("1205012992882778163")
+	// 		if (!member.roles.cache.has("1205012992882778163") && member.joinedTimestamp < 1704042000000)
+	// 			await member.roles.add("1205012992882778163")
+	// 	}));
+	// 	console.log("Done")
+	// })
+
+	// let channel = guild.channels.cache.get("1205015073937035275");
+	// if (channel.isTextBased()) channel.send(".");
+
 	const sttChannel = guild.channels.cache.get(client.config.status.channelId) as TextBasedChannel;
 	const ipServer = "wildlands.online";
 	const updateStatus = () => sttChannel.messages.fetch(client.config.status.msgId).then(async (msg: Message) => {
@@ -29,14 +42,14 @@ export async function execute(client: Bot) {
 			embed.description = "";
 			embed.fields = [{
 				name: "Players [" + res.data.players.online + "]",
-				value: res.data.players.list?.join(", ") || "Không một bóng người",
+				value: res.data.players.list?.join(", ") || "Không có ai",
 				inline: true
 			}, {
 				name: "Version",
 				value: res.data.version,
 				inline: true
 			}, {
-				name: "Update vào",
+				name: "Update",
 				value: `<t:${Math.trunc(Date.now() / 1000)}:R>`,
 				inline: true
 			}, {
