@@ -1,7 +1,7 @@
 import {
-    AutocompleteInteraction,
-    ButtonInteraction,
-    ChatInputApplicationCommandData,
+	AutocompleteInteraction,
+	ButtonInteraction,
+	ChatInputApplicationCommandData,
 } from "discord.js";
 import Context from "./Context";
 
